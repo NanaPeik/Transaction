@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configuration xmlns="http://www.jooq.org/xsd/jooq-codegen-3.14.0.xsd">
+  <!-- Configure the database connection here -->
+  <jdbc>
+    <driver>org.postgresql.Driver</driver>
+    <url>jdbc:postgresql://localhost:5432/weather</url>
+    <user>postgres</user>
+    <password>postgres</password>
+  </jdbc>
+  <generator>
+    <database>
+      <!-- The database schema (or in the absence of schema support, in your RDBMS this
+           can be the owner, user, database name) to be generated -->
+      <inputSchema>public</inputSchema>
+
+      <!-- All elements that are generated from your schema
+           (A Java regular expression. Use the pipe to separate several expressions)
+           Watch out for case-sensitivity. Depending on your database, this might be important! -->
+      <includes>.*</includes>
+
+      <!-- All elements that are excluded from your schema
+           (A Java regular expression. Use the pipe to separate several expressions).
+           Excludes match before includes, i.e. excludes have a higher priority -->
+      <excludes></excludes>
+    </database>
+
+    <target>
+      <!-- The destination package of your generated classes (within the destination directory) -->
+      <packageName>ge.tsu.weather.classes</packageName>
+
+      <!-- The destination directory of your generated classes. Using Maven directory layout here -->
+      <directory>../src/main/java/</directory>
+    </target>
+  </generator>
+</configuration>
+<!--  java -cp jooq-3.14.9.jar;jooq-meta-3.14.9.jar;jooq-codegen-3.14.9.jar;reactive-streams-1.0.3.jar;postgresql-42.2.20.jar org.jooq.codegen.GenerationTool jooq-config.xml-->

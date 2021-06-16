@@ -1,0 +1,12 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/transaction?currentSchema=public
+    username: postgres
+    password: postgres
+  flyway:
+    baseline-version: 1
+    baseline-on-migrate: true
+    mixed: true

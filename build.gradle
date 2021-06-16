@@ -1,0 +1,36 @@
+plugins {
+    id 'org.springframework.boot' version '2.5.1'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+group = 'ge.tsu'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-jooq'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.flywaydb:flyway-core'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'org.postgresql:postgresql'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // https://mvnrepository.com/artifact/org.jooq/jooq
+    implementation 'org.jooq:jooq:3.14.11'
+    // https://mvnrepository.com/artifact/org.jooq/jooq-meta
+    implementation 'org.jooq:jooq-meta:3.14.11'
+    // https://mvnrepository.com/artifact/org.jooq/jooq-codegen
+    implementation 'org.jooq:jooq-codegen:3.14.11'
+    // https://mvnrepository.com/artifact/org.postgresql/postgresql
+    implementation 'org.postgresql:postgresql:42.2.21'
+    // https://mvnrepository.com/artifact/org.reactivestreams/reactive-streams
+    implementation 'org.reactivestreams:reactive-streams:1.0.3'
+}
+
+test {
+    useJUnitPlatform()
+}

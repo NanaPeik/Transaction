@@ -1,36 +1,14 @@
 package ge.tsu.transaction;
 
-public class TransactionAdd {
-  private String sender;
-  private String senderAccount;
+import java.time.LocalDateTime;
+
+public class TransactionForFilter {
+
   private String receiver;
   private String receiverAccount;
   private Double amount;
   private String documentNumber;
-
-  public String getDocumentNumber() {
-    return documentNumber;
-  }
-
-  public void setDocumentNumber(String documentNumber) {
-    this.documentNumber = documentNumber;
-  }
-
-  public String getSender() {
-    return sender;
-  }
-
-  public void setSender(String sender) {
-    this.sender = sender;
-  }
-
-  public String getSenderAccount() {
-    return senderAccount;
-  }
-
-  public void setSenderAccount(String senderAccount) {
-    this.senderAccount = senderAccount;
-  }
+  private LocalDateTime postDate;
 
   public String getReceiver() {
     return receiver;
@@ -54,5 +32,21 @@ public class TransactionAdd {
 
   public void setAmount(Double amount) {
     this.amount = amount;
+  }
+
+  public String getDocumentNumber() {
+    return documentNumber;
+  }
+
+  public void setDocumentNumber(String documentNumber) {
+    this.documentNumber = documentNumber;
+  }
+
+  public LocalDateTime getPostDate() {
+    return postDate;
+  }
+
+  public void setPostDate(LocalDateTime postDate) {
+    this.postDate = postDate;
   }
 }

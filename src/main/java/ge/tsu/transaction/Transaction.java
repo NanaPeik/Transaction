@@ -1,14 +1,16 @@
 package ge.tsu.transaction;
 
+import java.time.LocalDateTime;
+
 public class Transaction {
 
   private String sender;
   private String senderAccount;
   private String receiver;
   private String receiverAccount;
-  private Float amount;
+  private Double amount;
   private String documentNumber;
-  private String postDate;
+  private LocalDateTime postDate;
 
   public String getSender() {
     return sender;
@@ -42,11 +44,11 @@ public class Transaction {
     this.receiverAccount = receiverAccount;
   }
 
-  public Float getAmount() {
+  public Double getAmount() {
     return amount;
   }
 
-  public void setAmount(Float amount) {
+  public void setAmount(Double amount) {
     this.amount = amount;
   }
 
@@ -58,11 +60,11 @@ public class Transaction {
     this.documentNumber = documentNumber;
   }
 
-  public String getPostDate() {
+  public LocalDateTime getPostDate() {
     return postDate;
   }
 
-  public void setPostDate(String postDate) {
+  public void setPostDate(LocalDateTime postDate) {
     this.postDate = postDate;
   }
 }

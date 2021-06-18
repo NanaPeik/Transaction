@@ -4,7 +4,7 @@ public class User {
 
   private Integer id;
   private String accountNumber;
-  private Float amount;
+  private Double amount;
   private String name;
   private String surname;
   private String identificationNumber;
@@ -27,11 +27,11 @@ public class User {
     this.accountNumber = accountNumber;
   }
 
-  public Float getAmount() {
+  public Double getAmount() {
     return amount;
   }
 
-  public void setAmount(Float amount) {
+  public void setAmount(Double amount) {
     this.amount = amount;
   }
 

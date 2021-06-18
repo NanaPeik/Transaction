@@ -1,0 +1,1 @@
+/usr/lib/jvm/java-11-openjdk-amd64/bin/java -classpath reactive-streams-1.0.3.jar:jaxb-api-2.3.1.jar:jooq-3.14.11.jar:jooq-meta-3.14.11.jar:jooq-codegen-3.14.11.jar:postgresql-42.2.21.jar:. org.jooq.codegen.GenerationTool ./jooq-config.xml

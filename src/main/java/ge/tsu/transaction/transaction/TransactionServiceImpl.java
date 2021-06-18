@@ -1,9 +1,16 @@
-package ge.tsu.transaction;
+package ge.tsu.transaction.transaction;
 
 import ge.tsu.transaction.classes.Tables;
 import ge.tsu.transaction.classes.tables.records.TransactionRecord;
+import ge.tsu.transaction.exception.TransactionNotFoundException;
+import ge.tsu.transaction.transaction.Transaction;
+import ge.tsu.transaction.transaction.TransactionAdd;
+import ge.tsu.transaction.transaction.TransactionForFilter;
+import ge.tsu.transaction.transaction.TransactionService;
 import java.util.List;
+import java.util.Optional;
 import org.jooq.DSLContext;
+import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,18 +56,27 @@ public class TransactionServiceImpl implements TransactionService {
 
   @Override
   public Transaction getTransactionById(String documentNumber) {
-    TransactionRecord transactionRecord = dslContext.select().from(Tables.TRANSACTION)
-        .where(Tables.TRANSACTION.DOCUMENT_NUMBER.eq(documentNumber)).fetchOne()
-        .into(TransactionRecord.class);
-    return map(transactionRecord);
+
+    try {
+      TransactionRecord transactionRecord = dslContext.select().from(Tables.TRANSACTION)
+          .where(Tables.TRANSACTION.DOCUMENT_NUMBER.eq(documentNumber))
+          .fetchOne().into(TransactionRecord.class);
+      return map(transactionRecord);
+    } catch (NullPointerException r) {
+      throw new TransactionNotFoundException("now found transaction with required id... ");
+    }
+
   }
 
   @Override
-  public boolean deleteTransaction(String documentNumber) {
-    dslContext.deleteFrom(Tables.TRANSACTION)
+  public void deleteTransaction(String documentNumber) {
+    int check = dslContext.deleteFrom(Tables.TRANSACTION)
         .where(Tables.TRANSACTION.DOCUMENT_NUMBER.eq(documentNumber))
         .execute();
-    return false;
+
+    if (check == 0) {
+      throw new TransactionNotFoundException("now found transaction with required id... ");
+    }
   }
 
   private Transaction map(TransactionRecord transactionRecord) {

@@ -1,14 +1,32 @@
-package ge.tsu.transaction;
+package ge.tsu.transaction.transaction;
 
 import java.time.LocalDateTime;
 
-public class TransactionForFilter {
+public class Transaction {
 
+  private String sender;
+  private String senderAccount;
   private String receiver;
   private String receiverAccount;
   private Double amount;
   private String documentNumber;
   private LocalDateTime postDate;
+
+  public String getSender() {
+    return sender;
+  }
+
+  public void setSender(String sender) {
+    this.sender = sender;
+  }
+
+  public String getSenderAccount() {
+    return senderAccount;
+  }
+
+  public void setSenderAccount(String senderAccount) {
+    this.senderAccount = senderAccount;
+  }
 
   public String getReceiver() {
     return receiver;

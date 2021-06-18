@@ -1,4 +1,4 @@
-package ge.tsu.transaction;
+package ge.tsu.transaction.transaction;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

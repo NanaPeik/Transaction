@@ -1,4 +1,4 @@
-package ge.tsu.transaction;
+package ge.tsu.transaction.transaction;
 
 public class TransactionAdd {
   private String sender;

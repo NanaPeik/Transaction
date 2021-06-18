@@ -1,8 +1,8 @@
-package ge.tsu.transaction;
+package ge.tsu.transaction.user;
 
 public class User {
 
-  private Integer id;
+//  private Integer id;
   private String accountNumber;
   private Double amount;
   private String name;
@@ -11,13 +11,13 @@ public class User {
   private String mobileNumber;
   private String emailAddress;
 
-  public Integer getId() {
-    return id;
-  }
-
-  public void setId(Integer id) {
-    this.id = id;
-  }
+//  public Integer getId() {
+//    return id;
+//  }
+//
+//  public void setId(Integer id) {
+//    this.id = id;
+//  }
 
   public String getAccountNumber() {
     return accountNumber;

@@ -29,6 +29,9 @@ dependencies {
     implementation 'org.postgresql:postgresql:42.2.21'
     // https://mvnrepository.com/artifact/org.reactivestreams/reactive-streams
     implementation 'org.reactivestreams:reactive-streams:1.0.3'
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-jdbc
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
 }
 
 test {

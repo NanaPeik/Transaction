@@ -1,13 +1,19 @@
 package ge.tsu.transaction;
 
 import java.util.List;
+import org.jooq.DSLContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TransactionServiceImpl implements TransactionService{
 
+  @Autowired
+  private DSLContext dslContext;
+
   @Override
   public boolean createTransaction(TransactionAdd transaction) {
+
     return false;
   }
 

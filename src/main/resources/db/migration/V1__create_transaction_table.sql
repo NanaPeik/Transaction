@@ -4,7 +4,7 @@ create table if not exists public.transaction
         constraint status_pk
             primary key,
     document_number varchar,
-    post_date varchar,
+    post_date timestamp default timezone('utc'::text, now()),
     amount float,
     receiver_account varchar,
     receiver varchar,
@@ -12,10 +12,9 @@ create table if not exists public.transaction
     sender varchar
 );
 
-create table id not exists public.user
+create table if not exists public.user
 (
     id   serial not null
-        constraint status_pk
             primary key,
     identification_number varchar,
     account_number varchar,

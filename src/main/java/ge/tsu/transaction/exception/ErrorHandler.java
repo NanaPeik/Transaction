@@ -14,11 +14,22 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler(TransactionNotFoundException.class)
   public ResponseEntity<ApplicationError> handleTransactionNotFoundException(
-      TransactionNotFoundException exception, WebRequest webRequest){
-    ApplicationError error=new ApplicationError();
+      TransactionNotFoundException exception, WebRequest webRequest) {
+    ApplicationError error = new ApplicationError();
     error.setCode(101);
     error.setMessage(exception.getMessage());
 
     return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+  }
+
+  @ExceptionHandler(UserAlreadyExistsException.class)
+  public ResponseEntity<ApplicationError> handleUserAlreadyExistsException(
+      UserAlreadyExistsException exception, WebRequest webRequest
+  ) {
+    ApplicationError error = new ApplicationError();
+    error.setCode(409);
+    error.setMessage(exception.getMessage());
+
+    return new ResponseEntity<>(error, HttpStatus.ALREADY_REPORTED);
   }
 }

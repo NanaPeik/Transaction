@@ -1,8 +1,5 @@
 package ge.tsu.transaction.transaction;
 
-import ge.tsu.transaction.transaction.Transaction;
-import ge.tsu.transaction.transaction.TransactionAdd;
-import ge.tsu.transaction.transaction.TransactionForFilter;
 import java.util.List;
 
 public interface TransactionService {

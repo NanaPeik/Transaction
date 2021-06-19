@@ -1,5 +1,7 @@
 package ge.tsu.transaction.transaction;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import java.time.LocalDateTime;
 
 public class TransactionForFilter {
@@ -8,6 +10,7 @@ public class TransactionForFilter {
   private String receiverAccount;
   private Double amount;
   private String documentNumber;
+  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
   private LocalDateTime postDate;
 
   public String getReceiver() {

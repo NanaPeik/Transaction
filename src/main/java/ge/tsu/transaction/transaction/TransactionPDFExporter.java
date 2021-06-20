@@ -10,13 +10,22 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-import ge.tsu.transaction.user.User;
 import java.awt.Color;
+import java.io.File;
 import java.util.List;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletResponse;
 import org.jooq.exception.IOException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
+
 
 public class TransactionPDFExporter {
+
   private List<Transaction> transactions;
 
   public TransactionPDFExporter(
@@ -69,7 +78,7 @@ public class TransactionPDFExporter {
 
   public void export(HttpServletResponse response)
       throws DocumentException, IOException, java.io.IOException {
-    Document document = new Document(PageSize.A2);
+    Document document = new Document(PageSize.A3);
     PdfWriter.getInstance(document, response.getOutputStream());
 
     document.open();
@@ -77,10 +86,8 @@ public class TransactionPDFExporter {
     font.setSize(18);
     font.setColor(Color.DARK_GRAY);
 
-
     Paragraph p = new Paragraph("Transactions", font);
     p.setAlignment(Paragraph.ALIGN_CENTER);
-
 
     document.add(p);
     document.add(new Paragraph("\n"));
@@ -88,7 +95,7 @@ public class TransactionPDFExporter {
     PdfPTable table = new PdfPTable(7);
     table.setWidthPercentage(100f);
     table.spacingBefore();
-    table.setWidths(new float[] {2.5f, 2.5f, 2.0f, 2.5f, 2.5f,1.7f,1.7f});
+    table.setWidths(new float[]{2.5f, 2.5f, 2.0f, 2.5f, 2.5f, 1.7f, 1.7f});
     table.setSpacingBefore(2);
 
     writeTableHeader(table);

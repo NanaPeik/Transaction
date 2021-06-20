@@ -3,7 +3,6 @@ package ge.tsu.transaction.user;
 import ge.tsu.transaction.classes.Tables;
 import ge.tsu.transaction.classes.tables.records.UserRecord;
 import ge.tsu.transaction.exception.UserAlreadyExistsException;
-import org.jooq.Result;
 import org.jooq.DSLContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

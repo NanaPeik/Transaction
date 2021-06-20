@@ -43,6 +43,7 @@ public class TransactionServiceImpl implements TransactionService {
       userService
           .updateUser(transaction.getSenderId(), sender.getAmount() - transaction.getAmount());
       transactionRecord.insert();
+      return;
     }
 
     throw new UserNotFoundException("incorrect receiver id...");

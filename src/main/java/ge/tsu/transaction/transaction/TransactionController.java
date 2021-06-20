@@ -2,16 +2,20 @@ package ge.tsu.transaction.transaction;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.http.HttpRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,8 +52,15 @@ public class TransactionController {
   }
 
   @GetMapping("/send")
-  public void exportToPdf(HttpServletResponse response) throws IOException, MessagingException {
+  public void exportToPdf(HttpServletResponse response, HttpServletRequest request) throws IOException, MessagingException {
+    Cookie[] cookies = request.getCookies();
+    if (cookies != null && cookies.length > 0) {
+      for (Cookie cookie : cookies) {
+        if (cookie.getName().equals("user_id") && cookie.getValue() != null) {
 
+        }
+      }
+    }
 //    response.setContentType("application/pdf");
 //
 //    String headerKey = "Content-Disposition";

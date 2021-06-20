@@ -32,4 +32,15 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
 
     return new ResponseEntity<>(error, HttpStatus.ALREADY_REPORTED);
   }
+
+  @ExceptionHandler(UserIsNotRegisteredException.class)
+  public ResponseEntity<ApplicationError> handleUserIsNotRegisteredException(
+      UserIsNotRegisteredException exception, WebRequest webRequest
+  ) {
+    ApplicationError error = new ApplicationError();
+    error.setCode(101);
+    error.setMessage(exception.getMessage());
+
+    return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+  }
 }

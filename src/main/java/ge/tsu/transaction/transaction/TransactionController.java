@@ -1,12 +1,17 @@
 package ge.tsu.transaction.transaction;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +24,8 @@ public class TransactionController {
 
   @Autowired
   TransactionService transactionService;
+  @Autowired
+  private JavaMailSender mailSender;
 
   @PostMapping("/transactions")
   public List<Transaction> getTransactions(
@@ -45,12 +52,12 @@ public class TransactionController {
   }
 
   @GetMapping("/send")
-  public void exportToPdf(HttpServletResponse response) throws IOException {
+  public void exportToPdf(HttpServletResponse response) throws IOException, MessagingException {
 
     response.setContentType("application/pdf");
 
     String headerKey = "Content-Disposition";
-    String headerValue = "attachment; filename=users_1.pdf";
+    String headerValue = "attachment; filename=transactions.pdf";
     response.setHeader(headerKey, headerValue);
 
     Transaction transaction=new Transaction();
@@ -67,5 +74,31 @@ public class TransactionController {
     listUsers.add(transaction);
     TransactionPDFExporter exporter = new TransactionPDFExporter(listUsers);
     exporter.export(response);
+    sendEmailWithAttachment("nana.feiqrishvili2014@gmail.com",
+        "",
+        "email subject",
+        "D:\\Downloads\\transactions.pdf");
+  }
+
+  private void sendEmailWithAttachment(String toEmail,
+      String body,
+      String subject,
+      String attachment) throws MessagingException {
+
+    MimeMessage message = mailSender.createMimeMessage();
+
+    MimeMessageHelper messageHelper =
+        new MimeMessageHelper(message, true);
+    messageHelper.setFrom("nana.feiqrisvili2014@gmail.com");
+    messageHelper.setTo(toEmail);
+    messageHelper.setText(body);
+    messageHelper.setSubject(subject);
+
+    FileSystemResource fileSystem
+        = new FileSystemResource(new File(attachment));
+
+    messageHelper.addAttachment(fileSystem.getFilename(),fileSystem);
+    mailSender.send(message);
+    System.out.println("Mail send...");
   }
 }

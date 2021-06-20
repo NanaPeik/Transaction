@@ -21,8 +21,18 @@
       <!-- All elements that are excluded from your schema
            (A Java regular expression. Use the pipe to separate several expressions).
            Excludes match before includes, i.e. excludes have a higher priority -->
-      <excludes></excludes>
+      <excludes>
+        public.flyway_schema_history
+      </excludes>
     </database>
+
+
+    <generate>
+      <relations>true</relations>
+      <pojos>true</pojos>
+      <fluentSetters>true</fluentSetters>
+      <records>true</records>
+    </generate>
 
     <target>
       <!-- The destination package of your generated classes (within the destination directory) -->
@@ -33,5 +43,5 @@
     </target>
   </generator>
 </configuration>
-<!--
-java -cp jooq-3.14.11.jar;jaxb-api-2.3.1.jar;jooq-meta-3.14.11.jar;jooq-codegen-3.14.11.jar;reactive-streams-1.0.3.jar;postgresql-42.2.21.jar org.jooq.codegen.GenerationTool jooq-config.xml-->
+  <!--
+  java -cp jooq-3.14.11.jar;jaxb-api-2.3.1.jar;jooq-meta-3.14.11.jar;jooq-codegen-3.14.11.jar;reactive-streams-1.0.3.jar;postgresql-42.2.21.jar org.jooq.codegen.GenerationTool jooq-config.xml-->

@@ -4,7 +4,6 @@
 package ge.tsu.transaction.classes;
 
 
-import ge.tsu.transaction.classes.tables.FlywaySchemaHistory;
 import ge.tsu.transaction.classes.tables.Transaction;
 import ge.tsu.transaction.classes.tables.User;
 
@@ -29,11 +28,6 @@ public class Public extends SchemaImpl {
      * The reference instance of <code>public</code>
      */
     public static final Public PUBLIC = new Public();
-
-    /**
-     * The table <code>public.flyway_schema_history</code>.
-     */
-    public final FlywaySchemaHistory FLYWAY_SCHEMA_HISTORY = FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY;
 
     /**
      * The table <code>public.transaction</code>.
@@ -68,7 +62,6 @@ public class Public extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
-            FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY,
             Transaction.TRANSACTION,
             User.USER);
     }

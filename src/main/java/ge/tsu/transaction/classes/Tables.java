@@ -4,7 +4,6 @@
 package ge.tsu.transaction.classes;
 
 
-import ge.tsu.transaction.classes.tables.FlywaySchemaHistory;
 import ge.tsu.transaction.classes.tables.Transaction;
 import ge.tsu.transaction.classes.tables.User;
 
@@ -14,11 +13,6 @@ import ge.tsu.transaction.classes.tables.User;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
-
-    /**
-     * The table <code>public.flyway_schema_history</code>.
-     */
-    public static final FlywaySchemaHistory FLYWAY_SCHEMA_HISTORY = FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY;
 
     /**
      * The table <code>public.transaction</code>.

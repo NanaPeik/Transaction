@@ -61,7 +61,7 @@ public class User extends TableImpl<UserRecord> {
     /**
      * The column <code>public.user.account_number</code>.
      */
-    public final TableField<UserRecord, String> ACCOUNT_NUMBER = createField(DSL.name("account_number"), SQLDataType.VARCHAR, this, "");
+    public final TableField<UserRecord, String> ACCOUNT_NUMBER = createField(DSL.name("account_number"), SQLDataType.VARCHAR.defaultValue(DSL.field("uuid_in((md5((random())::text))::cstring)", SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>public.user.amount</code>.
@@ -138,7 +138,7 @@ public class User extends TableImpl<UserRecord> {
 
     @Override
     public List<UniqueKey<UserRecord>> getKeys() {
-        return Arrays.<UniqueKey<UserRecord>>asList(Keys.USER_PKEY);
+        return Arrays.<UniqueKey<UserRecord>>asList(Keys.USER_PKEY, Keys.USER_IDENTIFICATION_NUMBER_KEY, Keys.USER_EMAIL_ADDRESS_KEY);
     }
 
     @Override

@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -57,12 +57,12 @@ public class Transaction extends TableImpl<TransactionRecord> {
     /**
      * The column <code>public.transaction.document_number</code>.
      */
-    public final TableField<TransactionRecord, String> DOCUMENT_NUMBER = createField(DSL.name("document_number"), SQLDataType.VARCHAR, this, "");
+    public final TableField<TransactionRecord, String> DOCUMENT_NUMBER = createField(DSL.name("document_number"), SQLDataType.VARCHAR.defaultValue(DSL.field("uuid_in((md5((random())::text))::cstring)", SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>public.transaction.post_date</code>.
      */
-    public final TableField<TransactionRecord, LocalDateTime> POST_DATE = createField(DSL.name("post_date"), SQLDataType.LOCALDATETIME(6).defaultValue(DSL.field("timezone('utc'::text, now())", SQLDataType.LOCALDATETIME)), this, "");
+    public final TableField<TransactionRecord, LocalDateTime> POST_DATE = createField(DSL.name("post_date"), SQLDataType.LOCALDATETIME(6).defaultValue(DSL.field("now()", SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * The column <code>public.transaction.amount</code>.
@@ -70,24 +70,14 @@ public class Transaction extends TableImpl<TransactionRecord> {
     public final TableField<TransactionRecord, Double> AMOUNT = createField(DSL.name("amount"), SQLDataType.DOUBLE, this, "");
 
     /**
-     * The column <code>public.transaction.receiver_account</code>.
+     * The column <code>public.transaction.receiver_id</code>.
      */
-    public final TableField<TransactionRecord, String> RECEIVER_ACCOUNT = createField(DSL.name("receiver_account"), SQLDataType.VARCHAR, this, "");
+    public final TableField<TransactionRecord, Integer> RECEIVER_ID = createField(DSL.name("receiver_id"), SQLDataType.INTEGER, this, "");
 
     /**
-     * The column <code>public.transaction.receiver</code>.
+     * The column <code>public.transaction.sender_id</code>.
      */
-    public final TableField<TransactionRecord, String> RECEIVER = createField(DSL.name("receiver"), SQLDataType.VARCHAR, this, "");
-
-    /**
-     * The column <code>public.transaction.sender_account</code>.
-     */
-    public final TableField<TransactionRecord, String> SENDER_ACCOUNT = createField(DSL.name("sender_account"), SQLDataType.VARCHAR, this, "");
-
-    /**
-     * The column <code>public.transaction.sender</code>.
-     */
-    public final TableField<TransactionRecord, String> SENDER = createField(DSL.name("sender"), SQLDataType.VARCHAR, this, "");
+    public final TableField<TransactionRecord, Integer> SENDER_ID = createField(DSL.name("sender_id"), SQLDataType.INTEGER, this, "");
 
     private Transaction(Name alias, Table<TransactionRecord> aliased) {
         this(alias, aliased, null);
@@ -143,6 +133,28 @@ public class Transaction extends TableImpl<TransactionRecord> {
     }
 
     @Override
+    public List<ForeignKey<TransactionRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<TransactionRecord, ?>>asList(Keys.TRANSACTION__RECEIVER_ID_FK01, Keys.TRANSACTION__SENDER_ID_FK02);
+    }
+
+    private transient User _receiverIdFk01;
+    private transient User _senderIdFk02;
+
+    public User receiverIdFk01() {
+        if (_receiverIdFk01 == null)
+            _receiverIdFk01 = new User(this, Keys.TRANSACTION__RECEIVER_ID_FK01);
+
+        return _receiverIdFk01;
+    }
+
+    public User senderIdFk02() {
+        if (_senderIdFk02 == null)
+            _senderIdFk02 = new User(this, Keys.TRANSACTION__SENDER_ID_FK02);
+
+        return _senderIdFk02;
+    }
+
+    @Override
     public Transaction as(String alias) {
         return new Transaction(DSL.name(alias), this);
     }
@@ -169,11 +181,11 @@ public class Transaction extends TableImpl<TransactionRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Integer, String, LocalDateTime, Double, String, String, String, String> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row6<Integer, String, LocalDateTime, Double, Integer, Integer> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }

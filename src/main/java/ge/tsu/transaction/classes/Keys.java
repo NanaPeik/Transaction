@@ -4,13 +4,12 @@
 package ge.tsu.transaction.classes;
 
 
-import ge.tsu.transaction.classes.tables.FlywaySchemaHistory;
 import ge.tsu.transaction.classes.tables.Transaction;
 import ge.tsu.transaction.classes.tables.User;
-import ge.tsu.transaction.classes.tables.records.FlywaySchemaHistoryRecord;
 import ge.tsu.transaction.classes.tables.records.TransactionRecord;
 import ge.tsu.transaction.classes.tables.records.UserRecord;
 
+import org.jooq.ForeignKey;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
@@ -28,7 +27,15 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final UniqueKey<FlywaySchemaHistoryRecord> FLYWAY_SCHEMA_HISTORY_PK = Internal.createUniqueKey(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY, DSL.name("flyway_schema_history_pk"), new TableField[] { FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.INSTALLED_RANK }, true);
     public static final UniqueKey<TransactionRecord> STATUS_PK = Internal.createUniqueKey(Transaction.TRANSACTION, DSL.name("status_pk"), new TableField[] { Transaction.TRANSACTION.ID }, true);
+    public static final UniqueKey<UserRecord> USER_EMAIL_ADDRESS_KEY = Internal.createUniqueKey(User.USER, DSL.name("user_email_address_key"), new TableField[] { User.USER.EMAIL_ADDRESS }, true);
+    public static final UniqueKey<UserRecord> USER_IDENTIFICATION_NUMBER_KEY = Internal.createUniqueKey(User.USER, DSL.name("user_identification_number_key"), new TableField[] { User.USER.IDENTIFICATION_NUMBER }, true);
     public static final UniqueKey<UserRecord> USER_PKEY = Internal.createUniqueKey(User.USER, DSL.name("user_pkey"), new TableField[] { User.USER.ID }, true);
+
+    // -------------------------------------------------------------------------
+    // FOREIGN KEY definitions
+    // -------------------------------------------------------------------------
+
+    public static final ForeignKey<TransactionRecord, UserRecord> TRANSACTION__RECEIVER_ID_FK01 = Internal.createForeignKey(Transaction.TRANSACTION, DSL.name("receiver_id_fk01"), new TableField[] { Transaction.TRANSACTION.RECEIVER_ID }, Keys.USER_PKEY, new TableField[] { User.USER.ID }, true);
+    public static final ForeignKey<TransactionRecord, UserRecord> TRANSACTION__SENDER_ID_FK02 = Internal.createForeignKey(Transaction.TRANSACTION, DSL.name("sender_id_fk02"), new TableField[] { Transaction.TRANSACTION.SENDER_ID }, Keys.USER_PKEY, new TableField[] { User.USER.ID }, true);
 }

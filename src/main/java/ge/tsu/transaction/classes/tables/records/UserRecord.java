@@ -24,8 +24,9 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> implements Recor
     /**
      * Setter for <code>public.user.id</code>.
      */
-    public void setId(Integer value) {
+    public UserRecord setId(Integer value) {
         set(0, value);
+        return this;
     }
 
     /**
@@ -38,8 +39,9 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> implements Recor
     /**
      * Setter for <code>public.user.identification_number</code>.
      */
-    public void setIdentificationNumber(String value) {
+    public UserRecord setIdentificationNumber(String value) {
         set(1, value);
+        return this;
     }
 
     /**
@@ -52,8 +54,9 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> implements Recor
     /**
      * Setter for <code>public.user.account_number</code>.
      */
-    public void setAccountNumber(String value) {
+    public UserRecord setAccountNumber(String value) {
         set(2, value);
+        return this;
     }
 
     /**
@@ -66,8 +69,9 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> implements Recor
     /**
      * Setter for <code>public.user.amount</code>.
      */
-    public void setAmount(Double value) {
+    public UserRecord setAmount(Double value) {
         set(3, value);
+        return this;
     }
 
     /**
@@ -80,8 +84,9 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> implements Recor
     /**
      * Setter for <code>public.user.name</code>.
      */
-    public void setName(String value) {
+    public UserRecord setName(String value) {
         set(4, value);
+        return this;
     }
 
     /**
@@ -94,8 +99,9 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> implements Recor
     /**
      * Setter for <code>public.user.surname</code>.
      */
-    public void setSurname(String value) {
+    public UserRecord setSurname(String value) {
         set(5, value);
+        return this;
     }
 
     /**
@@ -108,8 +114,9 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> implements Recor
     /**
      * Setter for <code>public.user.mobile_number</code>.
      */
-    public void setMobileNumber(String value) {
+    public UserRecord setMobileNumber(String value) {
         set(6, value);
+        return this;
     }
 
     /**
@@ -122,8 +129,9 @@ public class UserRecord extends UpdatableRecordImpl<UserRecord> implements Recor
     /**
      * Setter for <code>public.user.email_address</code>.
      */
-    public void setEmailAddress(String value) {
+    public UserRecord setEmailAddress(String value) {
         set(7, value);
+        return this;
     }
 
     /**

@@ -12,7 +12,7 @@ public class UserController {
   UserService userService;
 
   @PostMapping("/user")
-  public void registration(@RequestBody User user){
+  public void registration(@RequestBody UserAdd user){
     userService.registration(user);
   }
 }

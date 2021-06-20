@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row9;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -87,6 +87,11 @@ public class User extends TableImpl<UserRecord> {
      * The column <code>public.user.email_address</code>.
      */
     public final TableField<UserRecord, String> EMAIL_ADDRESS = createField(DSL.name("email_address"), SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>public.user.password</code>.
+     */
+    public final TableField<UserRecord, String> PASSWORD = createField(DSL.name("password"), SQLDataType.VARCHAR, this, "");
 
     private User(Name alias, Table<UserRecord> aliased) {
         this(alias, aliased, null);
@@ -168,11 +173,11 @@ public class User extends TableImpl<UserRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Integer, String, String, Double, String, String, String, String> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row9<Integer, String, String, Double, String, String, String, String, String> fieldsRow() {
+        return (Row9) super.fieldsRow();
     }
 }

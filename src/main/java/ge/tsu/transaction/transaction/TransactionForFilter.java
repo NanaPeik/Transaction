@@ -6,19 +6,39 @@ import java.time.LocalDateTime;
 
 public class TransactionForFilter {
 
-  private String receiver;
+  private String receiverEmail;
   private String receiverAccount;
+  private String senderEmail;
+  private String senderAccount;
   private Double amount;
   private String documentNumber;
   @JsonDeserialize(using = LocalDateTimeDeserializer.class)
   private LocalDateTime postDate;
+  private Integer limit;
+  private Integer offset;
 
-  public String getReceiver() {
-    return receiver;
+  public String getReceiverEmail() {
+    return receiverEmail;
   }
 
-  public void setReceiver(String receiver) {
-    this.receiver = receiver;
+  public void setReceiverEmail(String receiverEmail) {
+    this.receiverEmail = receiverEmail;
+  }
+
+  public String getSenderEmail() {
+    return senderEmail;
+  }
+
+  public void setSenderEmail(String senderEmail) {
+    this.senderEmail = senderEmail;
+  }
+
+  public String getSenderAccount() {
+    return senderAccount;
+  }
+
+  public void setSenderAccount(String senderAccount) {
+    this.senderAccount = senderAccount;
   }
 
   public String getReceiverAccount() {
@@ -51,5 +71,21 @@ public class TransactionForFilter {
 
   public void setPostDate(LocalDateTime postDate) {
     this.postDate = postDate;
+  }
+
+  public Integer getLimit() {
+    return limit;
+  }
+
+  public void setLimit(Integer limit) {
+    this.limit = limit;
+  }
+
+  public Integer getOffset() {
+    return offset;
+  }
+
+  public void setOffset(Integer offset) {
+    this.offset = offset;
   }
 }

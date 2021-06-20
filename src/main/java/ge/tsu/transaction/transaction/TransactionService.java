@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface TransactionService {
     void createTransaction(TransactionAdd transaction);
-    List<Transaction> getTransactions(TransactionForFilter transaction);
-    Transaction getTransactionById(String documentNumber);
-    void deleteTransaction(String documentNumber);
+    List<TransactionView> getTransactions(TransactionForFilter transaction);
+    TransactionView getTransactionById(Integer transactionId);
+    void deleteTransaction(Integer transactionId);
 }

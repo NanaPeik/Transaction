@@ -8,7 +8,8 @@ create table if not exists public.user
     name varchar,
     surname varchar,
     mobile_number varchar,
-    email_address varchar unique
+    email_address varchar unique,
+    password varchar
     );
 
 create table if not exists public.transaction

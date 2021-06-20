@@ -11,25 +11,17 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import java.awt.Color;
-import java.io.File;
 import java.util.List;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletResponse;
 import org.jooq.exception.IOException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Service;
 
 
 public class TransactionPDFExporter {
 
-  private List<Transaction> transactions;
+  private List<TransactionView> transactions;
 
   public TransactionPDFExporter(
-      List<Transaction> transactions) {
+      List<TransactionView> transactions) {
     this.transactions = transactions;
   }
 
@@ -65,15 +57,15 @@ public class TransactionPDFExporter {
   }
 
   private void writeTableData(PdfPTable table) {
-    for (Transaction transaction : transactions) {
-      table.addCell(transaction.getDocumentNumber());
-      table.addCell(transaction.getPostDate().toString());
-      table.addCell(transaction.getAmount().toString());
-      table.addCell(transaction.getReceiver());
-      table.addCell(transaction.getReceiverAccount());
-      table.addCell(transaction.getSender());
-      table.addCell(transaction.getSenderAccount());
-    }
+//    for (TransactionView transaction : transactions) {
+//      table.addCell(transaction.getDocumentNumber());
+//      table.addCell(transaction.getPostDate().toString());
+//      table.addCell(transaction.getAmount().toString());
+//      table.addCell(transaction.getReceiver());
+//      table.addCell(transaction.getReceiverAccount());
+//      table.addCell(transaction.getSender());
+//      table.addCell(transaction.getSenderAccount());
+//    }
   }
 
   public void export(HttpServletResponse response)

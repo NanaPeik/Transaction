@@ -1,11 +1,16 @@
 package ge.tsu.transaction.transaction;
 
 import ge.tsu.transaction.classes.Tables;
+import ge.tsu.transaction.classes.tables.User;
+import ge.tsu.transaction.classes.tables.pojos.Transaction;
 import ge.tsu.transaction.classes.tables.records.TransactionRecord;
 import ge.tsu.transaction.exception.TransactionNotFoundException;
-import java.util.Collections;
+import ge.tsu.transaction.user.UserService;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.jooq.DSLContext;
+import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.springframework.beans.BeanUtils;
@@ -17,19 +22,29 @@ public class TransactionServiceImpl implements TransactionService {
 
   @Autowired
   private DSLContext dslContext;
+  @Autowired
+  private UserService userService;
 
   @Override
   public void createTransaction(TransactionAdd transaction) {
+    //get user if exist and then add transaction
     TransactionRecord transactionRecord = dslContext.newRecord(Tables.TRANSACTION);
     BeanUtils.copyProperties(transaction, transactionRecord);
     transactionRecord.insert();
   }
 
   @Override
-  public List<Transaction> getTransactions(TransactionForFilter transaction) {
-    SelectConditionStep conditionStep =
-        dslContext.select().from(Tables.TRANSACTION)
-            .where(DSL.trueCondition());
+  public List<TransactionView> getTransactions(TransactionForFilter transaction) {
+    User receiver = User.USER.as("Receiver");
+    User sender = User.USER.as("Sender");
+    SelectConditionStep<Record> conditionStep = dslContext
+      .select()
+      .from(Tables.TRANSACTION)
+      .leftJoin(receiver)
+      .on(Tables.TRANSACTION.RECEIVER_ID.eq(receiver.ID))
+      .leftJoin(sender)
+      .on(Tables.TRANSACTION.SENDER_ID.eq(sender.ID))
+      .where(DSL.trueCondition());
     if (transaction.getAmount() != null) {
       conditionStep.and(Tables.TRANSACTION.AMOUNT.eq(transaction.getAmount()));
     }
@@ -39,54 +54,60 @@ public class TransactionServiceImpl implements TransactionService {
     if (transaction.getPostDate() != null) {
       conditionStep.and(Tables.TRANSACTION.POST_DATE.eq(transaction.getPostDate()));
     }
-    if (transaction.getReceiver() != null) {
-      conditionStep.and(Tables.TRANSACTION.RECEIVER.eq(transaction.getReceiver()));
+    if (transaction.getReceiverEmail() != null) {
+      conditionStep.and(receiver.EMAIL_ADDRESS.eq(transaction.getReceiverEmail()));
     }
     if (transaction.getReceiverAccount() != null) {
-      conditionStep.and(Tables.TRANSACTION.RECEIVER_ACCOUNT.eq(transaction.getReceiverAccount()));
+      conditionStep.and(receiver.ACCOUNT_NUMBER.eq(transaction.getReceiverAccount()));
     }
-    List transactionRecords = conditionStep.fetch()
-        .into(TransactionRecord.class);
-    if (transactionRecords.isEmpty()) {
-      return Collections.emptyList();
+    if (transaction.getSenderEmail() != null) {
+      conditionStep.and(sender.EMAIL_ADDRESS.eq(transaction.getSenderEmail()));
     }
-    return Collections.emptyList();
+    if (transaction.getSenderAccount() != null) {
+      conditionStep.and(sender.ACCOUNT_NUMBER.eq(transaction.getSenderAccount()));
+    }
+    if (transaction.getLimit() != null) {
+      conditionStep.limit(transaction.getLimit());
+    }
+    if (transaction.getOffset() != null) {
+      conditionStep.offset(transaction.getOffset());
+    }
+
+    return conditionStep.fetch()
+      .into(TransactionRecord.class)
+      .stream()
+      .map(it -> map(it.into(Transaction.class)))
+      .collect(Collectors.toList());
+
   }
 
   @Override
-  public Transaction getTransactionById(String documentNumber) {
-
-    TransactionRecord transactionRecord = dslContext.select().from(Tables.TRANSACTION)
-        .where(Tables.TRANSACTION.DOCUMENT_NUMBER.eq(documentNumber))
-        .fetchOne().into(TransactionRecord.class);
-    return map(transactionRecord);
-
-
+  public TransactionView getTransactionById(Integer transactionId) {
+    return map(getTransaction(transactionId).into(Transaction.class));
   }
 
   @Override
-  public void deleteTransaction(String documentNumber) {
-    int check = dslContext.deleteFrom(Tables.TRANSACTION)
-        .where(Tables.TRANSACTION.DOCUMENT_NUMBER.eq(documentNumber))
-        .execute();
-
-    if (check == 0) {
-      throw new TransactionNotFoundException("now found transaction with required id... ");
+  public void deleteTransaction(Integer transactionId) {
+    TransactionRecord transactionRecord = getTransaction(transactionId);
+    if (transactionRecord == null) {
+      throw new TransactionNotFoundException("Not found transaction with required id... ");
     }
+    transactionRecord.delete();
   }
 
 
+  private TransactionView map(Transaction transaction) {
+    TransactionView transactionView = new TransactionView();
+    BeanUtils.copyProperties(transaction, transactionView);
+    return transactionView;
+  }
 
-  private Transaction map(Object transactionRecord) {
-    Transaction transaction = new Transaction();
-    TransactionRecord record= (TransactionRecord) transactionRecord;
-    transaction.setAmount(record.getAmount());
-    transaction.setDocumentNumber(record.getDocumentNumber());
-    transaction.setPostDate(record.getPostDate());
-    transaction.setReceiver(record.getReceiver());
-    transaction.setReceiverAccount(record.getReceiverAccount());
-    transaction.setSender(record.getSender());
-    transaction.setSenderAccount(record.getSenderAccount());
-    return transaction;
+  private TransactionRecord getTransaction(Integer transactionId) {
+    return Objects.requireNonNull(dslContext
+      .select()
+      .from(Tables.TRANSACTION)
+      .where(Tables.TRANSACTION.ID.eq(transactionId))
+      .fetchOne())
+      .into(TransactionRecord.class);
   }
 }

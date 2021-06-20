@@ -23,6 +23,7 @@ public class User implements Serializable {
     private String  surname;
     private String  mobileNumber;
     private String  emailAddress;
+    private String  password;
 
     public User() {}
 
@@ -35,6 +36,7 @@ public class User implements Serializable {
         this.surname = value.surname;
         this.mobileNumber = value.mobileNumber;
         this.emailAddress = value.emailAddress;
+        this.password = value.password;
     }
 
     public User(
@@ -45,7 +47,8 @@ public class User implements Serializable {
         String  name,
         String  surname,
         String  mobileNumber,
-        String  emailAddress
+        String  emailAddress,
+        String  password
     ) {
         this.id = id;
         this.identificationNumber = identificationNumber;
@@ -55,6 +58,7 @@ public class User implements Serializable {
         this.surname = surname;
         this.mobileNumber = mobileNumber;
         this.emailAddress = emailAddress;
+        this.password = password;
     }
 
     /**
@@ -177,6 +181,21 @@ public class User implements Serializable {
         return this;
     }
 
+    /**
+     * Getter for <code>public.user.password</code>.
+     */
+    public String getPassword() {
+        return this.password;
+    }
+
+    /**
+     * Setter for <code>public.user.password</code>.
+     */
+    public User setPassword(String password) {
+        this.password = password;
+        return this;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("User (");
@@ -189,6 +208,7 @@ public class User implements Serializable {
         sb.append(", ").append(surname);
         sb.append(", ").append(mobileNumber);
         sb.append(", ").append(emailAddress);
+        sb.append(", ").append(password);
 
         sb.append(")");
         return sb.toString();

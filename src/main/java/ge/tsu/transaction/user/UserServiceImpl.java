@@ -30,7 +30,8 @@ public class UserServiceImpl implements UserService {
   @Override
   public UserView userExist(String identificationNumber) {
     Record record = dslContext.select().from(Tables.USER)
-        .where(Tables.USER.IDENTIFICATION_NUMBER.eq(identificationNumber)).fetchOne();
+        .where(Tables.USER.IDENTIFICATION_NUMBER.eq(identificationNumber))
+        .fetchOne();
     if (record != null) {
       return record.into(UserRecord.class).map(it -> map(it.into(User.class)));
     }
@@ -48,9 +49,17 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  public void updateUser(int id, Double amount) {
+    dslContext.update(Tables.USER)
+        .set(Tables.USER.AMOUNT, amount).where(Tables.USER.ID.eq(id))
+        .execute();
+  }
+
+  @Override
   public UserView checkUser(String email, String pass) {
     Record record = dslContext.select().from(Tables.USER)
-        .where(Tables.USER.EMAIL_ADDRESS.eq(email)).and(Tables.USER.PASSWORD.eq(pass))
+        .where(Tables.USER.EMAIL_ADDRESS.eq(email))
+        .and(Tables.USER.PASSWORD.eq(pass))
         .fetchOne();
     if (record != null) {
       return record.into(UserRecord.class).map(it -> map(it.into(User.class)));

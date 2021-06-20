@@ -4,11 +4,12 @@ import ge.tsu.transaction.classes.Tables;
 import ge.tsu.transaction.classes.tables.User;
 import ge.tsu.transaction.classes.tables.pojos.Transaction;
 import ge.tsu.transaction.classes.tables.records.TransactionRecord;
+import ge.tsu.transaction.exception.HaveNotEnoughAmountForTransactionException;
 import ge.tsu.transaction.exception.TransactionNotFoundException;
+import ge.tsu.transaction.exception.UserNotFoundException;
 import ge.tsu.transaction.user.UserService;
 import ge.tsu.transaction.user.UserView;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -28,10 +29,23 @@ public class TransactionServiceImpl implements TransactionService {
 
   @Override
   public void createTransaction(TransactionAdd transaction) {
-    //get user if exist and then add transaction
-    TransactionRecord transactionRecord = dslContext.newRecord(Tables.TRANSACTION);
-    BeanUtils.copyProperties(transaction, transactionRecord);
-    transactionRecord.insert();
+    UserView receiver = userService.getUserById(transaction.getReceiverId());
+    UserView sender = userService.getUserById(transaction.getSenderId());
+    if (receiver != null) {
+      TransactionRecord transactionRecord = dslContext.newRecord(Tables.TRANSACTION);
+      BeanUtils.copyProperties(transaction, transactionRecord);
+
+      if(sender.getAmount() < transaction.getAmount()){
+          throw new HaveNotEnoughAmountForTransactionException("Not enough amount on your account...");
+      }
+      userService
+          .updateUser(transaction.getReceiverId(), transaction.getAmount() + receiver.getAmount());
+      userService
+          .updateUser(transaction.getSenderId(), sender.getAmount() - transaction.getAmount());
+      transactionRecord.insert();
+    }
+
+    throw new UserNotFoundException("incorrect receiver id...");
   }
 
   @Override

@@ -1,6 +1,6 @@
 package ge.tsu.transaction.user;
 
-import ge.tsu.transaction.exception.UserIsNotRegisteredException;
+import ge.tsu.transaction.exception.UserNotFoundException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class UserController {
       HttpServletResponse httpServletResponse) {
     UserView userView = userService.checkUser(email, pass);
     if (userView == null) {
-      throw new UserIsNotRegisteredException("Incorrect email or password...");
+      throw new UserNotFoundException("Incorrect email or password...");
     }
     Cookie cookie = new Cookie("user_id", userView.getIdentificationNumber());
     cookie.setHttpOnly(true);

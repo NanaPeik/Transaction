@@ -1,14 +1,11 @@
 package ge.tsu.transaction.transaction;
 
-import ge.tsu.transaction.exception.UserIsNotRegisteredException;
+import ge.tsu.transaction.exception.UserNotFoundException;
 import ge.tsu.transaction.exception.UserNotLoggedInException;
 import ge.tsu.transaction.user.UserService;
 import ge.tsu.transaction.user.UserView;
 import java.io.File;
 import java.io.IOException;
-import java.net.http.HttpRequest;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -19,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,8 +39,26 @@ public class TransactionController {
   }
 
   @PostMapping("/transaction")
-  public void createTransaction(@RequestBody TransactionAdd transactionAdd) {
-    transactionService.createTransaction(transactionAdd);
+  public void createTransaction(
+      @RequestBody TransactionAdd transactionAdd,
+      HttpServletRequest request
+  ) {
+    UserView sender = userService.getUserById(transactionAdd.getSenderId());
+    if (sender != null) {
+
+      Cookie[] cookies = request.getCookies();
+      if (cookies != null && cookies.length > 0) {
+        for (Cookie cookie : cookies) {
+          if (cookie.getName().equals("user_id") && cookie.getValue()
+              .equals(sender.getIdentificationNumber())) {
+            transactionService.createTransaction(transactionAdd);
+            return;
+          }
+        }
+      }
+    }
+
+    throw new UserNotFoundException("invalid user id...");
   }
 
   @GetMapping("/transactions/{transactionId}")
@@ -69,7 +83,7 @@ public class TransactionController {
           UserView sender = userService.userExist(cookie.getValue());
           UserView receiver = userService.userExist(receiverId);
           if (receiver == null) {
-            throw new UserIsNotRegisteredException("incorrect receiver id...");
+            throw new UserNotFoundException("incorrect receiver id...");
           }
           TransactionForFilter transaction = new TransactionForFilter();
 
@@ -97,7 +111,7 @@ public class TransactionController {
         }
       }
     }
-    throw new UserNotLoggedInException("user did not loged in...");
+    throw new UserNotLoggedInException("user did not logged in...");
 
   }
 

@@ -4,7 +4,6 @@ import ge.tsu.transaction.exception.UserIsNotRegisteredException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,13 +34,15 @@ public class UserController {
     httpServletResponse.addCookie(cookie);
   }
 
-  @GetMapping("/logOut")
-  public void logOut(HttpServletRequest request) {
+  @PostMapping("/logOut")
+  public void logOut(HttpServletRequest request,
+      HttpServletResponse httpServletResponse) {
     Cookie[] cookies = request.getCookies();
     if (cookies != null && cookies.length > 0) {
       for (Cookie cookie : cookies) {
         if (cookie.getName().equals("user_id")) {
           cookie.setValue(null);
+          httpServletResponse.addCookie(cookie);
         }
       }
     }

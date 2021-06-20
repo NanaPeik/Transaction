@@ -6,6 +6,7 @@ import ge.tsu.transaction.classes.tables.pojos.Transaction;
 import ge.tsu.transaction.classes.tables.records.TransactionRecord;
 import ge.tsu.transaction.exception.TransactionNotFoundException;
 import ge.tsu.transaction.user.UserService;
+import ge.tsu.transaction.user.UserView;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -38,13 +39,13 @@ public class TransactionServiceImpl implements TransactionService {
     User receiver = User.USER.as("Receiver");
     User sender = User.USER.as("Sender");
     SelectConditionStep<Record> conditionStep = dslContext
-      .select()
-      .from(Tables.TRANSACTION)
-      .leftJoin(receiver)
-      .on(Tables.TRANSACTION.RECEIVER_ID.eq(receiver.ID))
-      .leftJoin(sender)
-      .on(Tables.TRANSACTION.SENDER_ID.eq(sender.ID))
-      .where(DSL.trueCondition());
+        .select()
+        .from(Tables.TRANSACTION)
+        .leftJoin(receiver)
+        .on(Tables.TRANSACTION.RECEIVER_ID.eq(receiver.ID))
+        .leftJoin(sender)
+        .on(Tables.TRANSACTION.SENDER_ID.eq(sender.ID))
+        .where(DSL.trueCondition());
     if (transaction.getAmount() != null) {
       conditionStep.and(Tables.TRANSACTION.AMOUNT.eq(transaction.getAmount()));
     }
@@ -74,16 +75,20 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     return conditionStep.fetch()
-      .into(TransactionRecord.class)
-      .stream()
-      .map(it -> map(it.into(Transaction.class)))
-      .collect(Collectors.toList());
+        .into(TransactionRecord.class)
+        .stream()
+        .map(it -> map(it.into(Transaction.class)))
+        .collect(Collectors.toList());
 
   }
 
   @Override
   public TransactionView getTransactionById(Integer transactionId) {
-    return map(getTransaction(transactionId).into(Transaction.class));
+    TransactionRecord record = getTransaction(transactionId);
+    if (record != null) {
+      return map(record.into(Transaction.class));
+    }
+    return null;
   }
 
   @Override
@@ -99,15 +104,25 @@ public class TransactionServiceImpl implements TransactionService {
   private TransactionView map(Transaction transaction) {
     TransactionView transactionView = new TransactionView();
     BeanUtils.copyProperties(transaction, transactionView);
+
+    UserView sender = userService.getUserById(transaction.getSenderId());
+    transactionView.setSender(sender);
+
+    UserView receiver = userService.getUserById(transaction.getReceiverId());
+    transactionView.setReceiver(receiver);
+
     return transactionView;
   }
 
   private TransactionRecord getTransaction(Integer transactionId) {
-    return Objects.requireNonNull(dslContext
-      .select()
-      .from(Tables.TRANSACTION)
-      .where(Tables.TRANSACTION.ID.eq(transactionId))
-      .fetchOne())
-      .into(TransactionRecord.class);
+    Record record = dslContext
+        .select()
+        .from(Tables.TRANSACTION)
+        .where(Tables.TRANSACTION.ID.eq(transactionId))
+        .fetchOne();
+    if (record != null) {
+      return record.into(TransactionRecord.class);
+    }
+    return null;
   }
 }

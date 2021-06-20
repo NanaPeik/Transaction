@@ -1,5 +1,9 @@
 package ge.tsu.transaction.transaction;
 
+import ge.tsu.transaction.exception.UserIsNotRegisteredException;
+import ge.tsu.transaction.exception.UserNotLoggedInException;
+import ge.tsu.transaction.user.UserService;
+import ge.tsu.transaction.user.UserView;
 import java.io.File;
 import java.io.IOException;
 import java.net.http.HttpRequest;
@@ -30,6 +34,8 @@ public class TransactionController {
   TransactionService transactionService;
   @Autowired
   private JavaMailSender mailSender;
+  @Autowired
+  UserService userService;
 
   @GetMapping("/transactions")
   public List<TransactionView> getTransactions(TransactionForFilter transactionFilter) {
@@ -51,61 +57,71 @@ public class TransactionController {
     transactionService.deleteTransaction(transactionId);
   }
 
-  @GetMapping("/send")
-  public void exportToPdf(HttpServletResponse response, HttpServletRequest request) throws IOException, MessagingException {
+  @GetMapping("/send/{receiverId}")
+  public void exportToPdf(HttpServletResponse response,
+      HttpServletRequest request,
+      @PathVariable String receiverId) throws IOException, MessagingException {
+
     Cookie[] cookies = request.getCookies();
     if (cookies != null && cookies.length > 0) {
       for (Cookie cookie : cookies) {
         if (cookie.getName().equals("user_id") && cookie.getValue() != null) {
+          UserView sender = userService.userExist(cookie.getValue());
+          UserView receiver = userService.userExist(receiverId);
+          if (receiver == null) {
+            throw new UserIsNotRegisteredException("incorrect receiver id...");
+          }
+          TransactionForFilter transaction = new TransactionForFilter();
 
+          transaction.setReceiverEmail(receiver.getEmailAddress());
+          transaction.setSenderAccount(sender.getAccountNumber());
+
+          List<TransactionView> list = transactionService.getTransactions(transaction);
+          response.setContentType("application/pdf");
+
+          String headerKey = "Content-Disposition";
+          String headerValue = "attachment; filename=transactions.pdf";
+          response.setHeader(headerKey, headerValue);
+
+          TransactionPDFExporter exporter = new TransactionPDFExporter(list);
+          exporter.export(response);
+
+          sendEmailWithAttachment(
+              sender.getEmailAddress(),
+              receiver.getEmailAddress(),
+              "",
+              "Transactions",
+              "D:\\Downloads\\transactions.pdf");
+
+          return;
         }
       }
     }
-//    response.setContentType("application/pdf");
-//
-//    String headerKey = "Content-Disposition";
-//    String headerValue = "attachment; filename=transactions.pdf";
-//    response.setHeader(headerKey, headerValue);
-//
-//    TransactionView transaction = new TransactionView();
-//    transaction.setAmount(23.0);
-//    transaction.setDocumentNumber("d111");
-//    transaction.setReceiver("dads");
-//    transaction.setPostDate(LocalDateTime.now());
-//    transaction.setReceiverAccount("dasd");
-//    transaction.setSender("ads");
-//    transaction.setSenderAccount("dasdsd");
-//    List<TransactionView> listUsers = new ArrayList<>();
-////        transactionService.getTransactions(new TransactionForFilter());
-//
-//    listUsers.add(transaction);
-//    TransactionPDFExporter exporter = new TransactionPDFExporter(listUsers);
-//    exporter.export(response);
-//    sendEmailWithAttachment("nana.feiqrishvili2014@gmail.com",
-//      "",
-//      "email subject",
-//      "D:\\Downloads\\transactions.pdf");
+    throw new UserNotLoggedInException("user did not loged in...");
+
   }
 
-  private void sendEmailWithAttachment(String toEmail,
-    String body,
-    String subject,
-    String attachment) throws MessagingException {
-//
-//    MimeMessage message = mailSender.createMimeMessage();
-//
-//    MimeMessageHelper messageHelper =
-//      new MimeMessageHelper(message, true);
-//    messageHelper.setFrom("nana.feiqrisvili2014@gmail.com");
-//    messageHelper.setTo(toEmail);
-//    messageHelper.setText(body);
-//    messageHelper.setSubject(subject);
-//
-//    FileSystemResource fileSystem
-//      = new FileSystemResource(new File(attachment));
-//
-//    messageHelper.addAttachment(fileSystem.getFilename(), fileSystem);
-//    mailSender.send(message);
-//    System.out.println("Mail send...");
+  private void sendEmailWithAttachment(
+      String fromEmail,
+      String toEmail,
+      String body,
+      String subject,
+      String attachment) throws MessagingException {
+
+    MimeMessage message = mailSender.createMimeMessage();
+
+    MimeMessageHelper messageHelper =
+        new MimeMessageHelper(message, true);
+    messageHelper.setFrom(fromEmail);
+    messageHelper.setTo(toEmail);
+    messageHelper.setText(body);
+    messageHelper.setSubject(subject);
+
+    FileSystemResource fileSystem
+        = new FileSystemResource(new File(attachment));
+
+    messageHelper.addAttachment(fileSystem.getFilename(), fileSystem);
+    mailSender.send(message);
+    System.out.println("Mail send...");
   }
 }

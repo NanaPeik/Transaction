@@ -43,4 +43,14 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
 
     return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
   }
+  @ExceptionHandler(UserNotLoggedInException.class)
+  public ResponseEntity<ApplicationError> handleUserNotLoggedInException(
+      UserIsNotRegisteredException exception, WebRequest webRequest
+  ) {
+    ApplicationError error = new ApplicationError();
+    error.setCode(101);
+    error.setMessage(exception.getMessage());
+
+    return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+  }
 }

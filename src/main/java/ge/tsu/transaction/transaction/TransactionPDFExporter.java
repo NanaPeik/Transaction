@@ -57,15 +57,15 @@ public class TransactionPDFExporter {
   }
 
   private void writeTableData(PdfPTable table) {
-//    for (TransactionView transaction : transactions) {
-//      table.addCell(transaction.getDocumentNumber());
-//      table.addCell(transaction.getPostDate().toString());
-//      table.addCell(transaction.getAmount().toString());
-//      table.addCell(transaction.getReceiver());
-//      table.addCell(transaction.getReceiverAccount());
-//      table.addCell(transaction.getSender());
-//      table.addCell(transaction.getSenderAccount());
-//    }
+    for (TransactionView transaction : transactions) {
+      table.addCell(transaction.getDocumentNumber());
+      table.addCell(transaction.getPostDate().toString());
+      table.addCell(transaction.getAmount().toString());
+      table.addCell(transaction.getReceiver().getName());
+      table.addCell(transaction.getReceiver().getAccountNumber());
+      table.addCell(transaction.getSender().getName());
+      table.addCell(transaction.getSender().getAccountNumber());
+    }
   }
 
   public void export(HttpServletResponse response)

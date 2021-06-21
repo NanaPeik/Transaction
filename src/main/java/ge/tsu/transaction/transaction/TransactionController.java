@@ -6,7 +6,12 @@ import ge.tsu.transaction.user.UserService;
 import ge.tsu.transaction.user.UserView;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.Cookie;
@@ -76,10 +81,13 @@ public class TransactionController {
       HttpServletRequest request,
       @PathVariable String receiverId) throws IOException, MessagingException {
 
+    boolean userIn = false;
     Cookie[] cookies = request.getCookies();
     if (cookies != null && cookies.length > 0) {
       for (Cookie cookie : cookies) {
-        if (cookie.getName().equals("user_id") && cookie.getValue() != null) {
+        if (cookie.getName().equals("user_id") && cookie.getValue() != null &&
+            !cookie.getValue().isEmpty()) {
+          userIn = true;
           UserView sender = userService.userExist(cookie.getValue());
           UserView receiver = userService.userExist(receiverId);
           if (receiver == null) {
@@ -93,8 +101,10 @@ public class TransactionController {
           List<TransactionView> list = transactionService.getTransactions(transaction);
           response.setContentType("application/pdf");
 
+          String fileName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+
           String headerKey = "Content-Disposition";
-          String headerValue = "attachment; filename=transactions.pdf";
+          String headerValue = String.format("attachment; filename=%s.pdf", fileName);
           response.setHeader(headerKey, headerValue);
 
           TransactionPDFExporter exporter = new TransactionPDFExporter(list);
@@ -105,14 +115,13 @@ public class TransactionController {
               receiver.getEmailAddress(),
               "",
               "Transactions",
-              "D:\\Downloads\\transactions.pdf");
-
-          return;
+              String.format("D:\\Downloads\\%s.pdf", fileName));
         }
       }
     }
-    throw new UserNotLoggedInException("user did not logged in...");
-
+    if (!userIn) {
+      throw new UserNotLoggedInException("user did not logged in...");
+    }
   }
 
   private void sendEmailWithAttachment(
@@ -134,7 +143,7 @@ public class TransactionController {
     FileSystemResource fileSystem
         = new FileSystemResource(new File(attachment));
 
-    messageHelper.addAttachment(fileSystem.getFilename(), fileSystem);
+    messageHelper.addAttachment("Transactions.pdf", fileSystem);
     mailSender.send(message);
     System.out.println("Mail send...");
   }

@@ -4,6 +4,7 @@ import ge.tsu.transaction.exception.UserNotFoundException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,7 +22,7 @@ public class UserController {
     userService.registration(user);
   }
 
-  @PostMapping("/login")
+  @GetMapping("/login")
   public void logIn(@RequestParam String email,
       @RequestParam String pass,
       HttpServletResponse httpServletResponse) {

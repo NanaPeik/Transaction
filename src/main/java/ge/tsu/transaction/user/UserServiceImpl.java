@@ -19,7 +19,8 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public void registration(UserAdd user) {
-    if (userExist(user.getIdentificationNumber()) != null) {
+    if (userExist(user.getIdentificationNumber()) != null
+        || getUserByEmail(user.getEmailAddress()) != null) {
       throw new UserAlreadyExistsException("User is already registered ...");
     }
     UserRecord userRecord = dslContext.newRecord(Tables.USER);
@@ -31,6 +32,16 @@ public class UserServiceImpl implements UserService {
   public UserView userExist(String identificationNumber) {
     Record record = dslContext.select().from(Tables.USER)
         .where(Tables.USER.IDENTIFICATION_NUMBER.eq(identificationNumber))
+        .fetchOne();
+    if (record != null) {
+      return record.into(UserRecord.class).map(it -> map(it.into(User.class)));
+    }
+    return null;
+  }
+
+  private UserView getUserByEmail(String emailAddress) {
+    Record record = dslContext.select().from(Tables.USER)
+        .where(Tables.USER.EMAIL_ADDRESS.eq(emailAddress))
         .fetchOne();
     if (record != null) {
       return record.into(UserRecord.class).map(it -> map(it.into(User.class)));
